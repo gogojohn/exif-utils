@@ -578,6 +578,7 @@ class TestGetCreationDateFromFile(unittest.TestCase):
         In this test case, a valid JPEG file, containing a creation date within the EXIF metadata is provided.
 
         We expect a date to be extracted.
+
         :return:
         """
 
@@ -593,6 +594,7 @@ class TestGetCreationDateFromFile(unittest.TestCase):
         In this test case, a valid JPEG file, containing no EXIF metadata is provided.
 
         We expect that an empty string will be returned, as there is no date to extract.
+
         :return:
         """
 
@@ -608,6 +610,7 @@ class TestGetCreationDateFromFile(unittest.TestCase):
         In this test case, an invalid JPEG file is provided.
 
         We expect that an empty string will be returned, as there is no date to extract.
+        
         :return:
         """
 
