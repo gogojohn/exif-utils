@@ -1,6 +1,7 @@
-import unittest
-import sort_image_files
 import os
+import sort_image_files
+import unittest
+
 
 
 class TestComputeHierarchicalPath(unittest.TestCase):
@@ -610,7 +611,7 @@ class TestGetCreationDateFromFile(unittest.TestCase):
         In this test case, an invalid JPEG file is provided.
 
         We expect that an empty string will be returned, as there is no date to extract.
-        
+
         :return:
         """
 
