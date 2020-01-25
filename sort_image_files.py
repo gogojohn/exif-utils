@@ -1,19 +1,23 @@
 import calendar
+import glob
 import os
 import piexif
 
 
-def sort_files(source_path, destination_path, sorting_scheme):
+def sort_files(source_path, destination_path, file_match_pattern, sorting_scheme):
     """
     Iterate through the files, in the provided path, and attempt to sort them using the specified sorting scheme.
 
     :param source_path:
     :param destination_path:
+    :param file_match_pattern:
     :param sorting_scheme:
     :return:
     """
 
-    sorting_scheme(source_path, destination_path)
+    # Builds a list of files to sort, using the provided path, and file match pattern
+    file_list = glob.glob(os.path.join(source_path, file_match_pattern))
+    sorting_scheme(file_list, destination_path)
 
 
 def compute_hierarchical_path(datetime_string):
@@ -123,9 +127,29 @@ def is_day_valid(day):
     return valid
 
 
-def sort_hierarchical_by_date(source_path, destination_path):
+def get_creation_date_from_file(file_path):
     """
-    Iterate through the files, in the provided path, and sort them into a hierarchical folder structure, in the
+    Attempts to determine the image creation date, from the EXIF metadata in the provided file.
+
+    :param file_path:
+    :return:
+    """
+
+    # Attempts to retrieve the DateTimeOriginal property, from the EXIF metadata.
+    try:
+        metadata = piexif.load(file_path)
+        creation_date = metadata['Exif'][piexif.ExifIFD.DateTimeOriginal].decode("utf-8")
+
+    # Sets the creation date to an empty string, if it cannot be retrieved from the EXIF metadata.
+    except Exception as e:
+        creation_date = ""
+
+    return creation_date
+
+
+def sort_hierarchical_by_date(file_list, destination_path):
+    """
+    Iterate through the provided list of files, and sort them into a hierarchical folder structure, in the
     following format:
 
     destination_path/YYYY/MM - Month/DD
@@ -139,16 +163,32 @@ def sort_hierarchical_by_date(source_path, destination_path):
 
     /destination_path/2020/01 - January/22
 
-    :param source_path:
+    :param file_list:
     :param destination_path:
     :return:
     """
 
+    # Sets the destination path to the current working directory, if one hasn't be specified.
+    if not destination_path:
+        destination_path = os.getcwd()
+
+    # Visits each file, in the provided list, and moves it to the computed destination path, based on the date that
+    # is specified in the EXIF metadata.
+    for file_path in file_list:
+        print("visiting file: {}".format(file_path))
+        creation_date = get_creation_date_from_file(file_path)
+        computed_destination = compute_hierarchical_path(creation_date)
+        filename = os.path.split(file_path)[1]
+        full_destination_path = os.path.join(destination_path, computed_destination, filename)
+        print("moving to: {}".format(full_destination_path))
+
 
 if __name__ == '__main__':
 
-    source_path = ""
-    destination_path = ""
-
+    source_path = os.getcwd()
+    destination_path = os.getcwd()
+    file_match_pattern = "*.JPG"
     sorting_scheme = sort_hierarchical_by_date
-    sort_files(source_path, destination_path, sorting_scheme)
+
+    # Sorts the files, based on the provided parameters.
+    sort_files(source_path, destination_path, file_match_pattern, sorting_scheme)
