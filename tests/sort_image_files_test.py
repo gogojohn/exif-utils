@@ -588,7 +588,7 @@ class TestGetCreationDateFromFile(unittest.TestCase):
 
         self.assertEqual(actual_result, expected_result)
 
-    def test_valid_file_no_metadata(self):
+    def test_valid_file_img_0839_no_metadata(self):
         """
         In this test case, a valid JPEG file, containing no EXIF metadata is provided.
 
@@ -597,6 +597,21 @@ class TestGetCreationDateFromFile(unittest.TestCase):
         """
 
         test_filename = 'IMG_0839_no_metadata.JPG'
+        file_path = os.path.join(self.test_data_path, test_filename)
+        expected_result = ''
+        actual_result = sort_image_files.get_creation_date_from_file(file_path)
+
+        self.assertEqual(actual_result, expected_result)
+
+    def test_invalid_file_img_0000_invalid(self):
+        """
+        In this test case, an invalid JPEG file is provided.
+
+        We expect that an empty string will be returned, as there is no date to extract.
+        :return:
+        """
+
+        test_filename = 'IMG_0000_invalid.JPG'
         file_path = os.path.join(self.test_data_path, test_filename)
         expected_result = ''
         actual_result = sort_image_files.get_creation_date_from_file(file_path)
