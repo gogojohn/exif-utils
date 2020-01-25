@@ -3,7 +3,6 @@ import sort_image_files
 import unittest
 
 
-
 class TestComputeHierarchicalPath(unittest.TestCase):
 
     def test_datetime_string_well_formed(self):
