@@ -180,7 +180,14 @@ def sort_hierarchical_by_date(file_list, destination_path):
         computed_destination = compute_hierarchical_path(creation_date)
         filename = os.path.split(file_path)[1]
         full_destination_path = os.path.join(destination_path, computed_destination, filename)
-        print("moving to: {}".format(full_destination_path))
+
+        # Attempts to move the file into the appropriate folder.
+        try:
+            # TODO: implement this
+            print("moving to: {}".format(full_destination_path))
+
+        except Exception as e:
+            print("error moving file: {}".format(e))
 
 
 if __name__ == '__main__':
