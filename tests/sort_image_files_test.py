@@ -1,4 +1,6 @@
+import fnmatch
 import os
+import re
 import shutil
 import sort_image_files
 import unittest
@@ -638,6 +640,48 @@ class TestCheckOrCreatePath(unittest.TestCase):
 
         expected_result = True
         actual_result = sort_image_files.check_or_create_path(self.test_folder_path, subfolder_components)
+
+        self.assertEqual(actual_result, expected_result)
+
+
+class TestSortHierarchicalByDate(unittest.TestCase):
+
+    def setUp(self):
+        self.test_data_folder_path = os.path.join(os.getcwd(), 'test_data')
+        self.test_folder_path = os.path.join(os.getcwd(), 'test_folder')
+        shutil.rmtree(self.test_folder_path, ignore_errors=True)
+        shutil.copytree(self.test_data_folder_path, self.test_folder_path)
+
+    def tearDown(self):
+        shutil.rmtree(self.test_folder_path, ignore_errors=True)
+
+    def test_sort_all_test_files(self):
+        source_path = self.test_folder_path
+        destination_path = self.test_folder_path
+        file_match_pattern = "*.*"
+        sorting_scheme = sort_image_files.sort_hierarchical_by_date
+
+        expected_result = \
+            {
+                "success": [
+                    os.path.join(self.test_folder_path, "IMG_0766.JPG"),
+                    os.path.join(self.test_folder_path, "IMG_0797.JPG"),
+                    os.path.join(self.test_folder_path, "IMG_0801.JPG"),
+                    os.path.join(self.test_folder_path, "IMG_0802.JPG"),
+                    os.path.join(self.test_folder_path, "IMG_0803.JPG"),
+                    os.path.join(self.test_folder_path, "IMG_0812.JPG"),
+                    os.path.join(self.test_folder_path, "IMG_0813.JPG"),
+                    os.path.join(self.test_folder_path, "IMG_0814.JPG"),
+                    os.path.join(self.test_folder_path, "IMG_0839.JPG"),
+                ],
+                "failure": {
+                    os.path.join(self.test_folder_path, "IMG_0000_invalid.JPG"):
+                        "Unable to extract creation date from EXIF metadata.",
+                    os.path.join(self.test_folder_path, "IMG_0839_no_metadata.JPG"):
+                        "Unable to extract creation date from EXIF metadata.",
+                }
+            }
+        actual_result = sort_image_files.sort_files(source_path, destination_path, file_match_pattern, sorting_scheme)
 
         self.assertEqual(actual_result, expected_result)
 

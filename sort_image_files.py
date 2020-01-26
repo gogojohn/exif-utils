@@ -4,20 +4,36 @@ import os
 import piexif
 
 
-def sort_files(source_path, destination_path, file_match_pattern, sorting_scheme):
+def build_file_list(source_folder_path, file_match_pattern="*.*"):
+    """
+    Builds a list of files, using the provided path, and file match pattern.
+
+    :param source_folder_path:
+    :param file_match_pattern:
+    :return:
+    """
+
+    return glob.glob(os.path.join(source_folder_path, file_match_pattern))
+
+
+def sort_files(source_folder_path, destination_folder_path, file_match_pattern, sorting_scheme):
     """
     Iterate through the files, in the provided path, and attempt to sort them using the specified sorting scheme.
 
-    :param source_path:
-    :param destination_path:
+    :param source_folder_path:
+    :param destination_folder_path:
     :param file_match_pattern:
     :param sorting_scheme:
     :return:
     """
 
-    # Builds a list of files to sort, using the provided path, and file match pattern
-    file_list = glob.glob(os.path.join(source_path, file_match_pattern))
-    sorting_scheme(file_list, destination_path)
+    # Builds the list of files to sort, using the provided path, and file match pattern
+    file_list = build_file_list(source_folder_path, file_match_pattern)
+
+    # Attempts to sort the files, in the provided list.
+    results = sorting_scheme(file_list, destination_folder_path)
+
+    return results
 
 
 def compute_hierarchical_path_components(datetime_string):
@@ -180,12 +196,12 @@ def check_or_create_path(base_path, subfolder_components):
     return exists
 
 
-def sort_hierarchical_by_date(file_list, destination_path):
+def sort_hierarchical_by_date(file_list, destination_base_path):
     """
     Iterate through the provided list of files, and sort them into a hierarchical folder structure, in the
     following format:
 
-    destination_path/YYYY/MM - Month/DD
+    destination_base_path/YYYY/MM - Month/DD
 
     YYYY - four digit year
     MM - month number (zero padded)
@@ -194,43 +210,69 @@ def sort_hierarchical_by_date(file_list, destination_path):
 
     Example: (January 22, 2020)
 
-    /destination_path/2020/01 - January/22
+    /destination_base_path/2020/01 - January/22
 
     :param file_list:
-    :param destination_path:
+    :param destination_base_path:
     :return:
     """
 
+    results = {"success": [], "failure": {}}
+
     # Sets the destination path to the current working directory, if one hasn't be specified.
-    if not destination_path:
-        destination_path = os.getcwd()
+    if not destination_base_path:
+        destination_base_path = os.getcwd()
+        print("No destination path specified. Using current directory as default.")
 
     # Visits each file, in the provided list, and moves it to the computed destination path, based on the date that
     # is specified in the EXIF metadata.
     for file_path in file_list:
-        print("visiting file: {}".format(file_path))
+        print("Inspecting file: {}".format(file_path))
+
+        # Attempts to extract the creation data from the EXIF metadata.
         creation_date = get_creation_date_from_file(file_path)
-        computed_destination = compute_hierarchical_path_components(creation_date)
-        filename = os.path.split(file_path)[1]
-        full_destination_path = os.path.join(destination_path, computed_destination, filename)
 
-        # Attempts to move the file into the appropriate folder.
-        try:
-            # TODO: implement this
-            print("moving to: {}".format(full_destination_path))
-            exists = check_or_create_path()
+        if creation_date == "":
+            result = "Unable to extract creation date from EXIF metadata."
+            results['failure'][file_path] = result
+            print("\t{}".format(result))
 
+        else:
+            computed_destination_folder = compute_hierarchical_path_components(creation_date)
+            filename = os.path.split(file_path)[1]
+            full_destination_path = os.path.join(destination_base_path, *computed_destination_folder, filename)
 
-        except Exception as e:
-            print("error moving file: {}".format(e))
+            # Attempts to move the file into the appropriate folder.
+            try:
+                print("\tMoving to: {}".format(full_destination_path))
+
+                # Assures that the necessary destination folder structure exists
+                exists = check_or_create_path(destination_base_path, computed_destination_folder)
+                if exists:
+
+                    # Moves the file to the destination in the hierarchical folder structure.
+                    os.rename(file_path, full_destination_path)
+                    results['success'].append(file_path)
+
+                else:
+                    result = "Unable to create the destination folder"
+                    results['failure'][file_path] = result
+                    print("\t{}".format(result))
+
+            except Exception as e:
+                result = "Error moving file: {}".format(e)
+                results['failure'][file_path] = result
+                print("\t{}".format(result))
+
+    return results
 
 
 if __name__ == '__main__':
 
     source_path = os.getcwd()
     destination_path = os.getcwd()
-    file_match_pattern = "*.JPG"
-    sorting_scheme = sort_hierarchical_by_date
+    filename_match_pattern = "*.JPG"
+    scheme = sort_hierarchical_by_date
 
     # Sorts the files, based on the provided parameters.
-    sort_files(source_path, destination_path, file_match_pattern, sorting_scheme)
+    sort_files(source_path, destination_path, filename_match_pattern, scheme)
