@@ -269,6 +269,7 @@ def sort_hierarchical_by_date(file_list, destination_base_path):
 
 if __name__ == '__main__':
 
+    # TODO: add support for parsing command line arguments to specify source, and destination paths
     source_path = os.getcwd()
     destination_path = os.getcwd()
     filename_match_pattern = "*.JPG"
