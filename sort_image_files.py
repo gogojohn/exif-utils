@@ -272,7 +272,7 @@ if __name__ == '__main__':
     # TODO: add support for parsing command line arguments to specify source, and destination paths
     source_path = os.getcwd()
     destination_path = os.getcwd()
-    filename_match_pattern = "*.JPG"
+    filename_match_pattern = "*.*"
     scheme = sort_hierarchical_by_date
 
     # Sorts the files, based on the provided parameters.
