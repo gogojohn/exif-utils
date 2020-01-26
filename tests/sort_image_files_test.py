@@ -626,14 +626,36 @@ class TestGetCreationDateFromFile(unittest.TestCase):
 class TestCheckOrCreatePath(unittest.TestCase):
 
     def setUp(self):
+        """
+        Cleans up any lingering folders, and/or files, in the 'test_folder' folder, from prior test runs that may not
+        have been able to clean up after themselves. Once a clean workspace has been established, creates a new
+        'test_folder' folder where tests can be performed.
+
+        :return:
+        """
         self.test_folder_path = os.path.join(os.getcwd(), 'test_folder')
         shutil.rmtree(self.test_folder_path, ignore_errors=True)
         os.mkdir(self.test_folder_path)
 
     def tearDown(self):
+        """
+        Cleans up the workspace, after tests have completed.
+
+        :return:
+        """
         shutil.rmtree(self.test_folder_path, ignore_errors=True)
 
     def test_full_path_non_existent(self):
+        """
+        In this test case, a list of subfolder components is provided.
+
+        We expect that a set of hierarchical folders should be created, from it, and that True should be returned as
+        an indication that the folders has been successfully created.
+
+        :return:
+        """
+
+
         subfolder_components = ['2020', '01 - January', '22']
 
         expected_result = True
@@ -645,15 +667,40 @@ class TestCheckOrCreatePath(unittest.TestCase):
 class TestSortHierarchicalByDate(unittest.TestCase):
 
     def setUp(self):
+        """
+        Cleans up any lingering folders, and/or files, in the 'test_folder' folder, from prior test runs that may not
+        have been able to clean up after themselves. Once a clean workspace has been established, creates a new
+        'test_folder' folder where tests can be performed.
+
+        :return:
+        """
+
         self.test_data_folder_path = os.path.join(os.getcwd(), 'test_data')
         self.test_folder_path = os.path.join(os.getcwd(), 'test_folder')
         shutil.rmtree(self.test_folder_path, ignore_errors=True)
         shutil.copytree(self.test_data_folder_path, self.test_folder_path)
 
     def tearDown(self):
+        """
+        Cleans up the workspace, after tests have completed.
+
+        :return:
+        """
+
         shutil.rmtree(self.test_folder_path, ignore_errors=True)
 
     def test_sort_all_test_files(self):
+        """
+        In this test case, a list of file paths is provided, for sorting.
+
+        We expect that the files will be sorted (where possible) into their respective folders within the hierarchical
+        folder structure. A dictionary, bearing details of the successes, and failures, of each attempt, should be
+        created and used for comparison against the expected outcome.
+
+        
+        :return:
+        """
+
         source_path = self.test_folder_path
         destination_path = self.test_folder_path
         file_match_pattern = "*.*"
