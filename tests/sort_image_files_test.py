@@ -1,6 +1,4 @@
-import fnmatch
 import os
-import re
 import shutil
 import sort_image_files
 import unittest
