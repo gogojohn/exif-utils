@@ -20,11 +20,11 @@ def sort_files(source_path, destination_path, file_match_pattern, sorting_scheme
     sorting_scheme(file_list, destination_path)
 
 
-def compute_hierarchical_path(datetime_string):
+def compute_hierarchical_path_components(datetime_string):
     """
-    Computes the hierarchical path, from the provided datetime string, in the following format:
+    Computes the hierarchical path components, from the provided datetime string, in the following format:
 
-    destination_path/YYYY/MM - Month/DD
+    ['YYYY', 'MM - Month', 'DD']
 
     YYYY - four digit year
     MM - month number (zero padded)
@@ -33,13 +33,13 @@ def compute_hierarchical_path(datetime_string):
 
     Example: ('2020:01:22 18:00:00')
 
-    /2020/01 - January/22
+    ['2020', '01 - January', '22']
 
     :param datetime_string: string
     :return: string
     """
 
-    path = ""
+    path_components = []
 
     # Confirms that a datetime string has been provided.
     if datetime_string:
@@ -62,9 +62,9 @@ def compute_hierarchical_path(datetime_string):
                 # Constructs the path, from the provided date components.
                 month_name = calendar.month_name[int(month_number)]
                 month = "{} - {}".format(month_number, month_name)
-                path = os.path.join(year, month, day)
+                path_components = [year, month, day]
 
-    return path
+    return path_components
 
 
 def is_year_valid(year):
@@ -169,7 +169,13 @@ def check_or_create_path(base_path, subfolder_components):
         # Checks to see if the parent folder of the specified path is valid.
         exists = check_or_create_path(base_path, subfolder_components[:-1])
         path = os.path.join(base_path, *subfolder_components)
-        os.mkdir(path)
+
+        # Attempts to create the folder.
+        try:
+            os.mkdir(path)
+
+        except FileNotFoundError:
+            exists = False
 
     return exists
 
@@ -204,7 +210,7 @@ def sort_hierarchical_by_date(file_list, destination_path):
     for file_path in file_list:
         print("visiting file: {}".format(file_path))
         creation_date = get_creation_date_from_file(file_path)
-        computed_destination = compute_hierarchical_path(creation_date)
+        computed_destination = compute_hierarchical_path_components(creation_date)
         filename = os.path.split(file_path)[1]
         full_destination_path = os.path.join(destination_path, computed_destination, filename)
 
@@ -212,6 +218,8 @@ def sort_hierarchical_by_date(file_list, destination_path):
         try:
             # TODO: implement this
             print("moving to: {}".format(full_destination_path))
+            exists = check_or_create_path()
+
 
         except Exception as e:
             print("error moving file: {}".format(e))

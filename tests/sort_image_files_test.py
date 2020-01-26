@@ -10,14 +10,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         """
         In this test case, a well formed datetime string has been provided.
 
-        We expect that this should be successfully parsed, and the corresponding path computed.
+        We expect that this should be successfully parsed, and the corresponding path components computed.
 
         :return:
         """
 
         datetime_string = '2020:01:15 18:00:41'
-        expected_result = os.path.join('2020', '01 - January', '15')
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = ['2020', '01 - January', '15']
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -26,14 +26,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         In this test case, a malformed datetime string has been provided, where the year portion of the date is
         invalid (it is two digits, instead of the required four).
 
-        We expect this to be caught, and for an empty string to be returned.
+        We expect this to be caught, and for an empty list to be returned.
 
         :return:
         """
 
         datetime_string = '20:01:15 18:00:41'
-        expected_result = ''
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = []
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -42,14 +42,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         In this test case, a malformed datetime string has been provided, where the year portion of the date is
         invalid (it is empty).
 
-        We expect this to be caught, and for an empty string to be returned.
+        We expect this to be caught, and for an empty list to be returned.
 
         :return:
         """
 
         datetime_string = ':01:15 18:00:41'
-        expected_result = ''
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = []
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -64,8 +64,8 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         """
 
         datetime_string = '2020:00:15 18:00:41'
-        expected_result = ''
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = []
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -74,14 +74,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         In this test case, a malformed datetime string has been provided, where the month portion of the date is
         invalid (it is outside of the upper bounds).
 
-        We expect this to be caught, and for an empty string to be returned.
+        We expect this to be caught, and for an empty list to be returned.
 
         :return:
         """
 
         datetime_string = '2020:13:15 18:00:41'
-        expected_result = ''
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = []
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -90,14 +90,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         In this test case, a malformed datetime string has been provided, where the month portion of the date is
         invalid (it has only one digit, rather than two).
 
-        We expect this to be caught, and for an empty string to be returned.
+        We expect this to be caught, and for an empty list to be returned.
 
         :return:
         """
 
         datetime_string = '2020:1:15 18:00:41'
-        expected_result = ''
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = []
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -106,14 +106,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         In this test case, a malformed datetime string has been provided, where the month portion of the date is
         invalid (it has more than two digits).
 
-        We expect this to be caught, and for an empty string to be returned.
+        We expect this to be caught, and for an empty list to be returned.
 
         :return:
         """
 
         datetime_string = '2020:001:15 18:00:41'
-        expected_result = ''
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = []
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -122,14 +122,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         In this test case, a malformed datetime string has been provided, where the month portion of the date is
         invalid (it is empty).
 
-        We expect this to be caught, and for an empty string to be returned.
+        We expect this to be caught, and for an empty list to be returned.
 
         :return:
         """
 
         datetime_string = '2020::15 18:00:41'
-        expected_result = ''
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = []
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -138,14 +138,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         In this test case, a malformed datetime string has been provided, where the day portion of the date is
         invalid (it is outside of the lower bounds).
 
-        We expect this to be caught, and for an empty string to be returned.
+        We expect this to be caught, and for an empty list to be returned.
 
         :return:
         """
 
         datetime_string = '2020:01:00 18:00:41'
-        expected_result = ''
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = []
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -154,14 +154,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         In this test case, a malformed datetime string has been provided, where the day portion of the date is
         invalid (it is outside of the upper bounds).
 
-        We expect this to be caught, and for an empty string to be returned.
+        We expect this to be caught, and for an empty list to be returned.
 
         :return:
         """
 
         datetime_string = '2020:01:32 18:00:41'
-        expected_result = ''
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = []
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -170,14 +170,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         In this test case, a malformed datetime string has been provided, where the day portion of the date is
         invalid (it has only one digit, rather than two).
 
-        We expect this to be caught, and for an empty string to be returned.
+        We expect this to be caught, and for an empty list to be returned.
 
         :return:
         """
 
         datetime_string = '2020:01:1 18:00:41'
-        expected_result = ''
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = []
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -186,14 +186,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         In this test case, a malformed datetime string has been provided, where the day portion of the date is
         invalid (it has more than two digits).
 
-        We expect this to be caught, and for an empty string to be returned.
+        We expect this to be caught, and for an empty list to be returned.
 
         :return:
         """
 
         datetime_string = '2020:01:015 18:00:41'
-        expected_result = ''
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = []
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -202,14 +202,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         In this test case, a malformed datetime string has been provided, where the day portion of the date is
         invalid (it is empty).
 
-        We expect this to be caught, and for an empty string to be returned.
+        We expect this to be caught, and for an empty list to be returned.
 
         :return:
         """
 
         datetime_string = '2020:01: 18:00:41'
-        expected_result = ''
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = []
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -218,14 +218,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         In this test case, the time portion has been excluded, and only the date components are present. This should
         not present a problem, as it's only the date components that we're concerned with.
 
-        We expect that this should be successfully parsed, and the corresponding path computed.
+        We expect that this should be successfully parsed, and the corresponding path components computed.
 
         :return:
         """
 
         datetime_string = '2020:01:15'
-        expected_result = os.path.join('2020', '01 - January', '15')
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = ['2020', '01 - January', '15']
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -235,14 +235,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         a similar format to the date, as it is still three components which are separated by colons. But clearly this
         is not a proper date.
 
-        We expect this to be caught, and for an empty string to be returned.
+        We expect this to be caught, and for an empty list to be returned.
 
         :return:
         """
 
         datetime_string = '18:00:41'
-        expected_result = ''
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = []
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
@@ -250,14 +250,14 @@ class TestComputeHierarchicalPath(unittest.TestCase):
         """
         In this test case, an empty datetime string is provided. Clearly this is not a proper date.
 
-        We expect this to be caught, and for an empty string to be returned.
+        We expect this to be caught, and for an empty list to be returned.
 
         :return:
         """
 
         datetime_string = ''
-        expected_result = ''
-        actual_result = sort_image_files.compute_hierarchical_path(datetime_string)
+        expected_result = []
+        actual_result = sort_image_files.compute_hierarchical_path_components(datetime_string)
 
         self.assertEqual(actual_result, expected_result)
 
