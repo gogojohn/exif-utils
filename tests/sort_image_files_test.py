@@ -1,4 +1,5 @@
 import os
+import shutil
 import sort_image_files
 import unittest
 
@@ -618,6 +619,25 @@ class TestGetCreationDateFromFile(unittest.TestCase):
         file_path = os.path.join(self.test_data_path, test_filename)
         expected_result = ''
         actual_result = sort_image_files.get_creation_date_from_file(file_path)
+
+        self.assertEqual(actual_result, expected_result)
+
+
+class TestCheckOrCreatePath(unittest.TestCase):
+
+    def setUp(self):
+        self.test_folder_path = os.path.join(os.getcwd(), 'test_folder')
+        shutil.rmtree(self.test_folder_path, ignore_errors=True)
+        os.mkdir(self.test_folder_path)
+
+    def tearDown(self):
+        shutil.rmtree(self.test_folder_path, ignore_errors=True)
+
+    def test_full_path_non_existent(self):
+        subfolder_components = ['2020', '01 - January', '22']
+
+        expected_result = True
+        actual_result = sort_image_files.check_or_create_path(self.test_folder_path, subfolder_components)
 
         self.assertEqual(actual_result, expected_result)
 

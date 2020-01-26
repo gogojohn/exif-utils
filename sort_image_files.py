@@ -147,6 +147,33 @@ def get_creation_date_from_file(file_path):
     return creation_date
 
 
+def check_or_create_path(base_path, subfolder_components):
+    """
+    Checks to see if the folder that is specified (by joining the provided base path and subfolder components)
+    exists. If it doesn't, then each of the missing subfolders are created.
+
+    :param base_path:
+    :param subfolder_list:
+    :return:
+    """
+
+    # Checks to see if the entire path is valid.
+    try:
+        path = os.path.join(base_path, *subfolder_components)
+        os.stat(path)
+        exists = True
+
+    # If the path doesn't exist, then recursively create each of the missing folders.
+    except FileNotFoundError:
+
+        # Checks to see if the parent folder of the specified path is valid.
+        exists = check_or_create_path(base_path, subfolder_components[:-1])
+        path = os.path.join(base_path, *subfolder_components)
+        os.mkdir(path)
+
+    return exists
+
+
 def sort_hierarchical_by_date(file_list, destination_path):
     """
     Iterate through the provided list of files, and sort them into a hierarchical folder structure, in the
