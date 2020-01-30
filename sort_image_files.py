@@ -251,6 +251,7 @@ def sort_hierarchical_by_date(file_list, destination_base_path):
                 if exists:
 
                     # Moves the file to the destination in the hierarchical folder structure.
+                    # TODO: check to see if file already exists (will currently overwrite)
                     os.rename(file_path, full_destination_path)
                     results['success'].append(file_path)
 
