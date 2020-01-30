@@ -583,7 +583,7 @@ class TestGetCreationDateFromFile(unittest.TestCase):
         :return:
         """
 
-        test_filename = 'IMG_0766.JPG'
+        test_filename = 'IMG_0766.jpg'
         file_path = os.path.join(self.test_data_path, test_filename)
         expected_result = '2020:01:15 18:00:41'
         actual_result = sort_image_files.get_creation_date_from_file(file_path)
@@ -664,6 +664,88 @@ class TestCheckOrCreatePath(unittest.TestCase):
         self.assertEqual(actual_result, expected_result)
 
 
+class TestBuildFileList(unittest.TestCase):
+
+    def setUp(self):
+        self.test_data_path = os.path.join(os.getcwd(), 'test_data')
+
+    def test_file_list_with_JPG_match_pattern(self):
+        """
+        In this test case, a source folder path containing several JPG files, and a match pattern which should match
+        only files with the (case sensitive) '.JPG' file extension, are provided.
+
+        We expect that a list containing the paths, for all of the files with the '.JPG' extention in the provided
+        source folder path, should be returned. Any files with the ".jpg" extension should be excluded from the list
+        that is returned.
+
+        :return:
+        """
+
+        expected_result = \
+            [
+                os.path.join(self.test_data_path, "IMG_0000_invalid.JPG"),
+                os.path.join(self.test_data_path, "IMG_0797.JPG"),
+                os.path.join(self.test_data_path, "IMG_0801.JPG"),
+                os.path.join(self.test_data_path, "IMG_0802.JPG"),
+                os.path.join(self.test_data_path, "IMG_0803.JPG"),
+                os.path.join(self.test_data_path, "IMG_0812.JPG"),
+                os.path.join(self.test_data_path, "IMG_0813.JPG"),
+                os.path.join(self.test_data_path, "IMG_0814.JPG"),
+                os.path.join(self.test_data_path, "IMG_0839.JPG"),
+                os.path.join(self.test_data_path, "IMG_0839_no_metadata.JPG"),
+            ]
+        actual_result = sort_image_files.build_file_list(self.test_data_path, "*.JPG")
+
+        self.assertEqual(actual_result, expected_result)
+
+    def test_file_list_with_jpg_match_pattern(self):
+        """
+        In this test case, a source folder path containing several JPG files, and a match pattern which should match
+        only files with the (case sensitive) '.jpg' file extension, are provided.
+
+        We expect that an empty list should be returned.
+
+        :return:
+        """
+
+        expected_result = \
+            [
+                os.path.join(self.test_data_path, "IMG_0766.jpg"),
+            ]
+        actual_result = sort_image_files.build_file_list(self.test_data_path, "*.jpg")
+
+        self.assertEqual(actual_result, expected_result)
+
+    def test_file_list_with_all_match_pattern(self):
+        """
+        In this test case, a source folder path containing several JPG files, and a match pattern which should match
+        all files, are provided.
+
+        We expect that a list containing the paths, for all of the files in the provided source folder path, should
+        be returned.
+
+        :return:
+        """
+
+        expected_result = \
+            [
+                os.path.join(self.test_data_path, "IMG_0000_invalid.JPG"),
+                os.path.join(self.test_data_path, "IMG_0766.jpg"),
+                os.path.join(self.test_data_path, "IMG_0797.JPG"),
+                os.path.join(self.test_data_path, "IMG_0801.JPG"),
+                os.path.join(self.test_data_path, "IMG_0802.JPG"),
+                os.path.join(self.test_data_path, "IMG_0803.JPG"),
+                os.path.join(self.test_data_path, "IMG_0812.JPG"),
+                os.path.join(self.test_data_path, "IMG_0813.JPG"),
+                os.path.join(self.test_data_path, "IMG_0814.JPG"),
+                os.path.join(self.test_data_path, "IMG_0839.JPG"),
+                os.path.join(self.test_data_path, "IMG_0839_no_metadata.JPG"),
+            ]
+        actual_result = sort_image_files.build_file_list(self.test_data_path, "*.*")
+
+        self.assertEqual(actual_result, expected_result)
+
+
 class TestSortHierarchicalByDate(unittest.TestCase):
 
     def setUp(self):
@@ -697,7 +779,7 @@ class TestSortHierarchicalByDate(unittest.TestCase):
         folder structure. A dictionary, bearing details of the successes, and failures, of each attempt, should be
         created and used for comparison against the expected outcome.
 
-        
+
         :return:
         """
 
@@ -709,7 +791,7 @@ class TestSortHierarchicalByDate(unittest.TestCase):
         expected_result = \
             {
                 "success": [
-                    os.path.join(self.test_folder_path, "IMG_0766.JPG"),
+                    os.path.join(self.test_folder_path, "IMG_0766.jpg"),
                     os.path.join(self.test_folder_path, "IMG_0797.JPG"),
                     os.path.join(self.test_folder_path, "IMG_0801.JPG"),
                     os.path.join(self.test_folder_path, "IMG_0802.JPG"),
