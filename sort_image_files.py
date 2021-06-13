@@ -169,7 +169,7 @@ def check_or_create_path(base_path, subfolder_components):
     exists. If it doesn't, then each of the missing subfolders are created.
 
     :param base_path:
-    :param subfolder_list:
+    :param subfolder_components:
     :return:
     """
 
